@@ -1,0 +1,3 @@
+It appears that all datasets are arranged in ascending order, and the task IDs are executed sequentially. However, if a dataset contains table functions (as in the example provided), the rest of the process is being skipped upon encountering an error. This suggests there is no dependency mechanism in place, as the process could potentially continue with the next task even if one fails.
+
+Currently, I am verifying the process for one dataset, which failed with an error. Regarding performance benchmarks, there doesn’t seem to be a specific timing standard to compare against. However, the current execution time for 33 datasets is 36 minutes.
