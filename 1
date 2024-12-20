@@ -1,0 +1,139 @@
+Here are structured test cases for the described system where multiple vendors publish JSON messages to Pub/Sub topics, and the messages are pushed to BigQuery tables via separate pipelines:
+
+1. Pub/Sub Topic Subscription Test
+
+Test Case 1.1: Verify Pub/Sub Topic Reception
+	•	Objective: Ensure that the Pub/Sub topic receives messages from all vendors.
+	•	Preconditions:
+	•	Pub/Sub topics are created for t1 and t2.
+	•	Vendors X, Y, Z are configured to publish to these topics.
+	•	Steps:
+	1.	Publish test messages from vendor pipelines (X, Y, Z) to their respective Pub/Sub topics.
+	2.	Verify the messages are received in the Pub/Sub topic’s subscription.
+	•	Expected Result:
+	•	Messages from all vendors appear in the respective Pub/Sub subscriptions.
+
+2. Message Validation Test
+
+Test Case 2.1: Validate Message Format
+	•	Objective: Verify that the published messages adhere to the expected JSON schema.
+	•	Preconditions:
+	•	JSON schema is defined for t1 and t2.
+	•	Steps:
+	1.	Publish a message to the Pub/Sub topic with valid schema.
+	2.	Publish another message with an invalid schema.
+	3.	Monitor pipeline logs for errors.
+	•	Expected Result:
+	•	Valid message is processed successfully.
+	•	Invalid message is logged or rejected with appropriate error messages.
+
+Test Case 2.2: Validate Vendor-Specific Attributes
+	•	Objective: Ensure vendor-specific attributes are present in the message.
+	•	Steps:
+	1.	Publish messages from each vendor, including required vendor-specific metadata.
+	2.	Validate metadata presence in the message.
+	•	Expected Result:
+	•	Vendor-specific attributes are correctly present and processed.
+
+3. Pipeline Functionality Test
+
+Test Case 3.1: Correct BigQuery Table Insertion
+	•	Objective: Ensure messages are correctly written to the respective BigQuery tables (t1 and t2).
+	•	Steps:
+	1.	Publish test messages to the t1 Pub/Sub topic.
+	2.	Verify the data appears in the t1 table in BigQuery.
+	3.	Repeat for t2.
+	•	Expected Result:
+	•	Data is inserted into the correct BigQuery table without errors.
+
+Test Case 3.2: Error Handling for Invalid Messages
+	•	Objective: Verify how the pipeline handles invalid JSON messages.
+	•	Steps:
+	1.	Publish an invalid JSON message to a Pub/Sub topic.
+	2.	Monitor the pipeline logs or error handler.
+	•	Expected Result:
+	•	Invalid messages are logged or moved to a dead-letter queue (DLQ) without disrupting the pipeline.
+
+Test Case 3.3: Vendor-Specific Message Routing
+	•	Objective: Ensure messages from different vendors are processed by their respective pipelines.
+	•	Steps:
+	1.	Publish messages from Vendor X, Y, and Z to their designated Pub/Sub topics.
+	2.	Verify the pipeline processes messages correctly and routes them to the appropriate BigQuery tables.
+	•	Expected Result:
+	•	Each vendor’s messages are correctly routed and processed.
+
+4. Performance and Scalability Test
+
+Test Case 4.1: High Volume Message Handling
+	•	Objective: Ensure the pipeline can handle high throughput.
+	•	Steps:
+	1.	Simulate publishing 10,000 messages to both t1 and t2 Pub/Sub topics.
+	2.	Monitor the pipeline’s performance and processing time.
+	•	Expected Result:
+	•	All messages are processed and inserted into BigQuery within the expected time frame.
+
+Test Case 4.2: Concurrent Vendor Publishing
+	•	Objective: Test concurrent publishing by multiple vendors.
+	•	Steps:
+	1.	Simulate concurrent message publishing by X, Y, and Z vendors.
+	2.	Monitor the system’s ability to handle concurrent loads without failures.
+	•	Expected Result:
+	•	The pipeline processes all messages without delays or data loss.
+
+5. Error and Recovery Test
+
+Test Case 5.1: Pub/Sub Downtime Recovery
+	•	Objective: Ensure the system recovers from Pub/Sub outages.
+	•	Steps:
+	1.	Simulate Pub/Sub topic unavailability (e.g., pause the subscription).
+	2.	Publish messages during the downtime.
+	3.	Resume the subscription and monitor for message processing.
+	•	Expected Result:
+	•	Messages published during downtime are processed once the subscription is resumed.
+
+Test Case 5.2: Pipeline Failure Recovery
+	•	Objective: Test recovery after a pipeline failure.
+	•	Steps:
+	1.	Introduce a failure in the pipeline (e.g., disconnect BigQuery).
+	2.	Monitor how the pipeline handles the error.
+	3.	Restore connectivity and verify data consistency.
+	•	Expected Result:
+	•	The pipeline logs the error, retries, and processes messages once connectivity is restored.
+
+6. Data Consistency Test
+
+Test Case 6.1: Duplicate Message Handling
+	•	Objective: Ensure duplicate messages are not inserted into BigQuery.
+	•	Steps:
+	1.	Publish duplicate messages to the Pub/Sub topic.
+	2.	Verify the BigQuery table contains only one instance of the message.
+	•	Expected Result:
+	•	Duplicate messages are either ignored or processed according to the deduplication strategy.
+
+Test Case 6.2: End-to-End Data Accuracy
+	•	Objective: Verify the accuracy of data from Pub/Sub to BigQuery.
+	•	Steps:
+	1.	Publish test messages with known values to Pub/Sub topics.
+	2.	Query BigQuery tables and compare the data with the input.
+	•	Expected Result:
+	•	Data in BigQuery matches the original message.
+
+7. Security and Access Control Test
+
+Test Case 7.1: Unauthorized Vendor Publishing
+	•	Objective: Ensure only authorized vendors can publish to Pub/Sub topics.
+	•	Steps:
+	1.	Attempt to publish a message from an unauthorized source.
+	2.	Monitor for access errors.
+	•	Expected Result:
+	•	Unauthorized messages are rejected with appropriate error messages.
+
+Test Case 7.2: BigQuery Table Access Restrictions
+	•	Objective: Ensure that only authorized roles can query BigQuery tables.
+	•	Steps:
+	1.	Attempt to query the BigQuery tables with unauthorized credentials.
+	2.	Verify access restrictions.
+	•	Expected Result:
+	•	Access is denied for unauthorized roles.
+
+By implementing these test cases, you can thoroughly validate the system’s ability to handle vendor-specific pipelines, message processing, error handling, and data accuracy.
