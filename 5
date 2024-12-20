@@ -1,0 +1,157 @@
+Here are some test cases for BigQuery slots to ensure efficient utilization, proper allocation, and overall performance for different scenarios:
+
+1. Slot Allocation and Utilization Tests
+
+Test Case 1.1: Default Slot Allocation
+	•	Objective: Verify that queries automatically use shared slots in on-demand pricing.
+	•	Steps:
+	1.	Run a simple SQL query on a small dataset.
+	2.	Monitor the slot allocation in the BigQuery Admin Console.
+	•	Expected Result:
+	•	Slots are dynamically allocated and released after query execution.
+
+Test Case 1.2: Reserved Slot Utilization
+	•	Objective: Validate that reserved slots are used for assigned workloads.
+	•	Steps:
+	1.	Reserve 500 slots for a specific project or job.
+	2.	Run a heavy query in that project.
+	3.	Monitor slot utilization using Cloud Monitoring or the Admin Console.
+	•	Expected Result:
+	•	Reserved slots are utilized for the query, and other projects cannot use these slots.
+
+2. Query Prioritization Tests
+
+Test Case 2.1: High Priority Query
+	•	Objective: Ensure high-priority queries are given preference in slot allocation.
+	•	Steps:
+	1.	Run a low-priority long-running query that uses most of the slots.
+	2.	Simultaneously run a high-priority query.
+	3.	Monitor the high-priority query’s execution.
+	•	Expected Result:
+	•	The high-priority query executes faster and preempts low-priority queries.
+
+Test Case 2.2: Low Priority Query Delay
+	•	Objective: Verify that low-priority queries are delayed if slots are fully utilized.
+	•	Steps:
+	1.	Reserve a fixed number of slots.
+	2.	Run several high-priority queries to occupy all slots.
+	3.	Execute a low-priority query.
+	•	Expected Result:
+	•	The low-priority query waits for available slots before execution.
+
+3. Performance and Scalability Tests
+
+Test Case 3.1: High Slot Utilization
+	•	Objective: Test how BigQuery performs under heavy workload with all reserved slots utilized.
+	•	Steps:
+	1.	Reserve 1,000 slots.
+	2.	Run multiple complex queries simultaneously until all slots are occupied.
+	3.	Monitor query execution time and slot usage.
+	•	Expected Result:
+	•	Queries execute without errors, and slots are fully utilized.
+
+Test Case 3.2: Over-Provisioning Test
+	•	Objective: Validate that unused reserved slots do not impact query execution.
+	•	Steps:
+	1.	Reserve 500 slots.
+	2.	Run a small query that requires fewer than 50 slots.
+	3.	Monitor slot utilization and query execution time.
+	•	Expected Result:
+	•	Query executes efficiently, and unused slots remain idle.
+
+4. Error Handling Tests
+
+Test Case 4.1: Slot Over-Utilization in On-Demand Mode
+	•	Objective: Verify how BigQuery handles queries that require more slots than available.
+	•	Steps:
+	1.	Run multiple large queries simultaneously in on-demand mode.
+	2.	Monitor query execution time and errors (if any).
+	•	Expected Result:
+	•	Queries execute without failure, but execution time may increase due to slot contention.
+
+Test Case 4.2: Slot Contention in Reserved Mode
+	•	Objective: Ensure proper error handling when reserved slots are fully utilized.
+	•	Steps:
+	1.	Reserve a fixed number of slots.
+	2.	Run queries that consume all reserved slots.
+	3.	Submit additional queries.
+	•	Expected Result:
+	•	Additional queries wait in the queue until slots are available, and no queries fail.
+
+5. Slot Reservation Tests
+
+Test Case 5.1: Multiple Reservations
+	•	Objective: Validate that multiple slot reservations are isolated.
+	•	Steps:
+	1.	Create two reservations: 500 slots for ETL jobs and 300 slots for ad-hoc queries.
+	2.	Run queries in both categories simultaneously.
+	3.	Monitor slot allocation.
+	•	Expected Result:
+	•	Slots from one reservation are not used by queries from the other reservation.
+
+Test Case 5.2: Unassigned Slots
+	•	Objective: Test behavior when reserved slots are not assigned to any workload.
+	•	Steps:
+	1.	Reserve 500 slots but do not assign them to any project.
+	2.	Run queries across the organization.
+	3.	Monitor slot usage.
+	•	Expected Result:
+	•	Reserved slots remain idle, and on-demand slots are used instead.
+
+6. Query Execution Tests
+
+Test Case 6.1: Slot Scaling for Large Queries
+	•	Objective: Verify that BigQuery dynamically scales slots for large queries.
+	•	Steps:
+	1.	Run a query that processes a large dataset (e.g., 1TB).
+	2.	Monitor the number of slots allocated during execution.
+	•	Expected Result:
+	•	BigQuery scales up to 2,000 slots for the query if necessary.
+
+Test Case 6.2: Small Query Efficiency
+	•	Objective: Ensure that small queries use fewer slots efficiently.
+	•	Steps:
+	1.	Run a query on a small dataset (e.g., 1MB).
+	2.	Monitor slot utilization.
+	•	Expected Result:
+	•	Query uses minimal slots and executes quickly.
+
+7. Monitoring and Logging Tests
+
+Test Case 7.1: Slot Utilization Dashboard
+	•	Objective: Verify that slot utilization metrics are correctly reported in Cloud Monitoring.
+	•	Steps:
+	1.	Run multiple queries.
+	2.	Check slot utilization metrics in Cloud Monitoring.
+	•	Expected Result:
+	•	Metrics accurately reflect the number of slots used and idle.
+
+Test Case 7.2: Query Execution Logs
+	•	Objective: Ensure that query logs capture slot usage details.
+	•	Steps:
+	1.	Run a complex query.
+	2.	Check the query logs for slot allocation and execution details.
+	•	Expected Result:
+	•	Logs provide detailed information about slot usage and query performance.
+
+8. Cost Management Tests
+
+Test Case 8.1: Cost Efficiency in Flat-Rate Mode
+	•	Objective: Validate cost-effectiveness of reserved slots for predictable workloads.
+	•	Steps:
+	1.	Reserve 1,000 slots.
+	2.	Run queries continuously over a month.
+	3.	Compare the cost with on-demand pricing for the same workload.
+	•	Expected Result:
+	•	Reserved slots result in lower costs for high query workloads.
+
+Test Case 8.2: On-Demand Cost Control
+	•	Objective: Ensure on-demand slot allocation does not exceed budget.
+	•	Steps:
+	1.	Set a budget alert in Cloud Billing.
+	2.	Run heavy workloads in on-demand mode.
+	3.	Monitor costs and slot usage.
+	•	Expected Result:
+	•	Budget alerts trigger appropriately, and slot allocation matches workload demand.
+
+These test cases ensure that
